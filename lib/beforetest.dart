@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:camera/camera.dart'; // Import this
 import 'package:ithera/test.dart';
-
 
 class BeforeTest extends StatelessWidget {
   @override
@@ -15,34 +15,30 @@ class BeforeTest extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              // Icon or Image
-              Icon(
-                Icons.assignment, // Replace with your desired icon or image
-                size: 80,
-                color: Colors.grey,
-              ),
+              Icon(Icons.assignment, size: 80, color: Colors.grey),
               SizedBox(height: 20),
-              // Bullet points
               _buildBulletPoint("this test will use your camera and microphone"),
               _buildBulletPoint("this test will take about 30:45 minutes"),
               _buildBulletPoint("the test will be a series of questions about your feelings and different situations"),
-              _buildBulletPoint("remember this assessment is a preliminary tool and should not be used as a definitive diagnosis of any psychological condition."),
+              _buildBulletPoint("remember this assessment is a preliminary tool..."),
 
               SizedBox(height: 30),
-              // Button
               ElevatedButton(
-                onPressed: () {
+                onPressed: () async {
+                  final cameras = await availableCameras(); // ⬅️ Get cameras
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => Test()),
+                    MaterialPageRoute(
+                      builder: (context) => TestPage(cameras: cameras), // ⬅️ Pass them
+                    ),
                   );
                 },
                 child: Text("give permission, start the test"),
                 style: ElevatedButton.styleFrom(
                   padding: EdgeInsets.symmetric(horizontal: 40, vertical: 15),
                   textStyle: TextStyle(fontSize: 18),
-                  backgroundColor: Color(0xFF90EE90), // Light green color
-                  foregroundColor: Colors.white, // Text color
+                  backgroundColor: Color(0xFF90EE90),
+                  foregroundColor: Colors.white,
                 ),
               ),
             ],

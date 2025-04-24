@@ -2,6 +2,11 @@ import 'package:flutter/material.dart';
 import 'home.dart'; // Import the HomeScreen
 
 class ReportScreen extends StatelessWidget {
+  final int score; // Add a field to hold the score
+
+  // Constructor to receive the score
+  ReportScreen({required this.score});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,14 +30,31 @@ class ReportScreen extends StatelessWidget {
                       borderRadius: BorderRadius.circular(6),
                     ),
                     child: Center(
-                      child: Text(
-                        'Full report',
-                        style: TextStyle(
-                          color: Color(0xFF052226),
-                          fontSize: 24,
-                          fontFamily: 'Inter',
-                          fontWeight: FontWeight.w400,
-                        ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          // Full report title
+                          Text(
+                            'Full report',
+                            style: TextStyle(
+                              color: Color(0xFF052226),
+                              fontSize: 24,
+                              fontFamily: 'Inter',
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
+                          SizedBox(height: 40), // Spacer between title and score
+                          // Display the score
+                          Text(
+                            'Your Score: $score',
+                            style: TextStyle(
+                              color: Color(0xFF052226),
+                              fontSize: 22,
+                              fontFamily: 'Inter',
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ),
