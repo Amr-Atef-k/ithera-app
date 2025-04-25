@@ -20,32 +20,96 @@ class _TestPageState extends State<TestPage> {
   int _score = 0;
   List<int?> _selectedAnswers = [];
 
+  // List of questions with their answers and scores
   final List<Map<String, dynamic>> _questions = [
     {
-      'question': 'How are you feeling today?',
+      'question': 'How do you currently feel in terms of your mood?',
       'answers': [
-        {'text': 'Great', 'score': 3},
-        {'text': 'Good', 'score': 2},
-        {'text': 'Okay', 'score': 1},
-        {'text': 'Bad', 'score': 0},
-      ],
-    },
-    {
-      'question': 'Do you enjoy your daily activities?',
-      'answers': [
-        {'text': 'Always', 'score': 3},
-        {'text': 'Often', 'score': 2},
         {'text': 'Rarely', 'score': 1},
-        {'text': 'Never', 'score': 0},
+        {'text': 'Sometimes', 'score': 2},
+        {'text': 'Often', 'score': 3},
+        {'text': 'Always', 'score': 4},
       ],
     },
     {
-      'question': 'How often do you feel anxious?',
+      'question': 'Do you find it hard to enjoy things you used to love?',
       'answers': [
-        {'text': 'Never', 'score': 3},
-        {'text': 'Rarely', 'score': 2},
-        {'text': 'Often', 'score': 1},
-        {'text': 'Always', 'score': 0},
+        {'text': 'Rarely', 'score': 1},
+        {'text': 'Sometimes', 'score': 2},
+        {'text': 'Often', 'score': 3},
+        {'text': 'Always', 'score': 4},
+      ],
+    },
+    {
+      'question': 'Do you feel constantly anxious or tense?',
+      'answers': [
+        {'text': 'Rarely', 'score': 1},
+        {'text': 'Sometimes', 'score': 2},
+        {'text': 'Often', 'score': 3},
+        {'text': 'Always', 'score': 4},
+      ],
+    },
+    {
+      'question': 'Do you have difficulty falling or staying asleep?',
+      'answers': [
+        {'text': 'Rarely', 'score': 1},
+        {'text': 'Sometimes', 'score': 2},
+        {'text': 'Often', 'score': 3},
+        {'text': 'Always', 'score': 4},
+      ],
+    },
+    {
+      'question': 'Do you feel tired or exhausted even after sleeping?',
+      'answers': [
+        {'text': 'Rarely', 'score': 1},
+        {'text': 'Sometimes', 'score': 2},
+        {'text': 'Often', 'score': 3},
+        {'text': 'Always', 'score': 4},
+      ],
+    },
+    {
+      'question': 'Do you find it hard to concentrate or think clearly?',
+      'answers': [
+        {'text': 'Rarely', 'score': 1},
+        {'text': 'Sometimes', 'score': 2},
+        {'text': 'Often', 'score': 3},
+        {'text': 'Always', 'score': 4},
+      ],
+    },
+    {
+      'question': 'Do you feel hopeless or like life has no meaning?',
+      'answers': [
+        {'text': 'Rarely', 'score': 1},
+        {'text': 'Sometimes', 'score': 2},
+        {'text': 'Often', 'score': 3},
+        {'text': 'Always', 'score': 4},
+      ],
+    },
+    {
+      'question': 'Do you have negative thoughts about yourself or feel guilty?',
+      'answers': [
+        {'text': 'Rarely', 'score': 1},
+        {'text': 'Sometimes', 'score': 2},
+        {'text': 'Often', 'score': 3},
+        {'text': 'Always', 'score': 4},
+      ],
+    },
+    {
+      'question': 'Do you feel disconnected or isolated from others?',
+      'answers': [
+        {'text': 'Rarely', 'score': 1},
+        {'text': 'Sometimes', 'score': 2},
+        {'text': 'Often', 'score': 3},
+        {'text': 'Always', 'score': 4},
+      ],
+    },
+    {
+      'question': 'Have you experienced changes in appetite or weight?',
+      'answers': [
+        {'text': 'Rarely', 'score': 1},
+        {'text': 'Sometimes', 'score': 2},
+        {'text': 'Often', 'score': 3},
+        {'text': 'Always', 'score': 4},
       ],
     },
   ];
@@ -53,10 +117,12 @@ class _TestPageState extends State<TestPage> {
   @override
   void initState() {
     super.initState();
+    // Initialize the list to store selected answers for each question
     _selectedAnswers = List<int?>.filled(_questions.length, null);
     _initializeCamera();
   }
 
+  // Initializes the front-facing camera for emotion detection
   void _initializeCamera() async {
     _cameraController = CameraController(
       widget.cameras.firstWhere(
@@ -71,6 +137,7 @@ class _TestPageState extends State<TestPage> {
     });
   }
 
+  // Calculates the total score and navigates to the report screen
   void _submitAnswers() {
     _score = 0;
     for (int i = 0; i < _selectedAnswers.length; i++) {
@@ -88,6 +155,7 @@ class _TestPageState extends State<TestPage> {
     );
   }
 
+  // Shows a confirmation dialog when the user attempts to exit the test
   void _showExitConfirmation() {
     showDialog(
       context: context,
@@ -115,6 +183,7 @@ class _TestPageState extends State<TestPage> {
     );
   }
 
+  // Shows an alert if the user tries to proceed without selecting an answer
   void _showNoAnswerAlert() {
     showDialog(
       context: context,
@@ -133,6 +202,7 @@ class _TestPageState extends State<TestPage> {
 
   @override
   void dispose() {
+    // Clean up the camera controller to free resources
     _cameraController.dispose();
     super.dispose();
   }
@@ -161,7 +231,7 @@ class _TestPageState extends State<TestPage> {
               ),
             ),
 
-            // Camera Preview
+            // Camera Preview for emotion detection
             Container(
               width: double.infinity,
               height: 200,
@@ -177,7 +247,7 @@ class _TestPageState extends State<TestPage> {
 
             SizedBox(height: 20),
 
-            // Emotion placeholder
+            // Placeholder for emotion detection result
             Text(
               'Emotion: ______',
               style: TextStyle(fontSize: 16, color: Colors.black87),
@@ -185,7 +255,7 @@ class _TestPageState extends State<TestPage> {
 
             SizedBox(height: 20),
 
-            // Question Box
+            // Question Box with question number
             Container(
               width: double.infinity,
               padding: EdgeInsets.all(20),
@@ -194,7 +264,7 @@ class _TestPageState extends State<TestPage> {
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Text(
-                currentQuestion['question'],
+                '${_currentQuestionIndex + 1}. ${currentQuestion['question']}',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
                 textAlign: TextAlign.center,
               ),
@@ -202,7 +272,7 @@ class _TestPageState extends State<TestPage> {
 
             SizedBox(height: 20),
 
-            // Answers Column
+            // Answer Buttons
             Column(
               children: List.generate(currentQuestion['answers'].length, (index) {
                 final answer = currentQuestion['answers'][index];
@@ -235,7 +305,7 @@ class _TestPageState extends State<TestPage> {
 
             SizedBox(height: 20),
 
-            // Navigation Buttons
+            // Navigation Buttons for moving between questions or submitting
             Row(
               mainAxisAlignment: MainAxisAlignment.end, // Align buttons to the right
               children: [
@@ -248,7 +318,7 @@ class _TestPageState extends State<TestPage> {
                     },
                     child: Text("Previous"),
                   ),
-                Spacer(), // Push "Next" to the right
+                Spacer(), // Push "Next" or "Submit" to the right
                 if (_currentQuestionIndex < _questions.length - 1)
                   ElevatedButton(
                     onPressed: () {

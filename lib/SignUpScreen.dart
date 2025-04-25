@@ -1,109 +1,131 @@
 import 'package:flutter/material.dart';
-
-import 'home.dart';
-
+import 'class/users.dart';
+import 'database_helper.dart';
+import 'SignInScreen.dart';
 
 class SignUpScreen extends StatelessWidget {
+  final _formKey = GlobalKey<FormState>();
+  final _firstName = TextEditingController();
+  final _lastName = TextEditingController();
+  final _email = TextEditingController();
+  final _phone = TextEditingController();
+  final _password = TextEditingController();
+  final _confirmPassword = TextEditingController();
+
+  final dbHelper = DatabaseHelper();
+
+  void _signUp(BuildContext context) async {
+    if (_formKey.currentState!.validate()) {
+      if (_password.text != _confirmPassword.text) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Passwords do not match')),
+        );
+        return;
+      }
+
+      final user = User(
+        firstName: _firstName.text.trim(),
+        lastName: _lastName.text.trim(),
+        email: _email.text.trim(),
+        phone: _phone.text.trim(),
+        password: _password.text.trim(),
+      );
+
+      try {
+        await dbHelper.insertUser(user);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Account created. Please log in.')),
+        );
+
+        // Navigate to SignInScreen after successful sign-up
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (_) => SignInScreen()),
+        );
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error: ${e.toString()}')),
+        );
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Center(
-              child: Container(
-                width: 80,
-                height: 80,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Colors.pink[200], // Approximate color from the image
-                ),
-                child: Center(child: Text('logo')),
-              ),
-            ),
-            SizedBox(height: 16),
-            Center(
-              child: Text(
-                'Welcome',
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.blue, // Approximate color from the image
+        padding: const EdgeInsets.all(16),
+        child: Form(
+          key: _formKey,
+          child: ListView(
+            children: [
+              SizedBox(height: 40),
+              Center(
+                child: Text(
+                  'Sign Up',
+                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                 ),
               ),
-            ),
-            SizedBox(height: 24),
-            Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    decoration: InputDecoration(
-                      labelText: 'First name',
-                      border: OutlineInputBorder(),
+              SizedBox(height: 20),
+              Row(
+                children: [
+                  Expanded(
+                    child: TextFormField(
+                      controller: _firstName,
+                      decoration: InputDecoration(labelText: 'First Name'),
+                      validator: (val) => val!.isEmpty ? 'Required' : null,
                     ),
                   ),
-                ),
-                SizedBox(width: 16),
-                Expanded(
-                  child: TextField(
-                    decoration: InputDecoration(
-                      labelText: 'Last name',
-                      border: OutlineInputBorder(),
+                  SizedBox(width: 16),
+                  Expanded(
+                    child: TextFormField(
+                      controller: _lastName,
+                      decoration: InputDecoration(labelText: 'Last Name'),
+                      validator: (val) => val!.isEmpty ? 'Required' : null,
                     ),
                   ),
-                ),
-              ],
-            ),
-            SizedBox(height: 16),
-            TextField(
-              decoration: InputDecoration(
-                labelText: 'E-mail',
-                border: OutlineInputBorder(),
+                ],
               ),
-            ),
-            SizedBox(height: 16),
-            TextField(
-              decoration: InputDecoration(
-                labelText: 'Phone number',
-                border: OutlineInputBorder(),
+              SizedBox(height: 16),
+              TextFormField(
+                controller: _email,
+                decoration: InputDecoration(labelText: 'Email'),
+                validator: (val) {
+                  if (val!.isEmpty) return 'Required';
+                  if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(val)) {
+                    return 'Enter a valid email';
+                  }
+                  return null;
+                },
               ),
-            ),
-            SizedBox(height: 16),
-            TextField(
-              obscureText: true,
-              decoration: InputDecoration(
-                labelText: 'Password',
-                border: OutlineInputBorder(),
+              SizedBox(height: 16),
+              TextFormField(
+                controller: _phone,
+                decoration: InputDecoration(labelText: 'Phone'),
+                validator: (val) => val!.isEmpty ? 'Required' : null,
               ),
-            ),
-            SizedBox(height: 16),
-            TextField(
-              obscureText: true,
-              decoration: InputDecoration(
-                labelText: 'Confirm password',
-                border: OutlineInputBorder(),
+              SizedBox(height: 16),
+              TextFormField(
+                controller: _password,
+                decoration: InputDecoration(labelText: 'Password'),
+                obscureText: true,
+                validator: (val) => val!.isEmpty ? 'Required' : null,
               ),
-            ),
-            SizedBox(height: 24),
-            ElevatedButton(
-              onPressed: () {
-                // Handle sign up button press (account creation)
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => HomeScreen()),
-                );
-              },
-              child: Text('Sign up'),
-              style: ElevatedButton.styleFrom(
-                padding: EdgeInsets.symmetric(vertical: 16),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30),
-                ),
+              SizedBox(height: 16),
+              TextFormField(
+                controller: _confirmPassword,
+                decoration: InputDecoration(labelText: 'Confirm Password'),
+                obscureText: true,
+                validator: (val) => val!.isEmpty ? 'Required' : null,
               ),
-            ),
-          ],
+              SizedBox(height: 24),
+              ElevatedButton(
+                // This button signs the user up, then redirects to SignInScreen
+                onPressed: () => _signUp(context),
+                child: Text('Sign Up'),
+              ),
+            ],
+          ),
         ),
       ),
     );

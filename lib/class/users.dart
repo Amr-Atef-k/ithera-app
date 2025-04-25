@@ -1,35 +1,39 @@
 class User {
   final int? id;
-  final String name;
+  final String firstName;
+  final String lastName;
   final String email;
+  final String phone;
   final String password;
-  final String phoneNumber;
 
   User({
     this.id,
-    required this.name,
+    required this.firstName,
+    required this.lastName,
     required this.email,
+    required this.phone,
     required this.password,
-    required this.phoneNumber,
   });
 
   Map<String, dynamic> toMap() {
     return {
       'id': id,
-      'name': name,
+      'first_name': firstName, // Use underscore to match SQL convention
+      'last_name': lastName,
       'email': email,
+      'phone': phone,
       'password': password,
-      'phoneNumber': phoneNumber,
     };
   }
 
   factory User.fromMap(Map<String, dynamic> map) {
     return User(
       id: map['id'],
-      name: map['name'],
+      firstName: map['first_name'], // Match the underscore naming
+      lastName: map['last_name'],
       email: map['email'],
+      phone: map['phone'],
       password: map['password'],
-      phoneNumber: map['phoneNumber'],
     );
   }
 }

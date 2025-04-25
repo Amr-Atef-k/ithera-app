@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'class/users.dart';
+import 'database_helper.dart';
 import 'SignUpScreen.dart';
 import 'home.dart';
 
@@ -8,25 +10,64 @@ class SignInScreen extends StatefulWidget {
 }
 
 class _SignInScreenState extends State<SignInScreen> {
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
   bool _rememberMe = false;
+
+  final dbHelper = DatabaseHelper();
+
+  void _login() async {
+    final email = _emailController.text.trim();
+    final password = _passwordController.text.trim();
+
+    final users = await dbHelper.getUsers();
+    final matchingUser = users.firstWhere(
+          (user) => user.email == email && user.password == password,
+      orElse: () => User(
+        firstName: '',
+        lastName: '',
+        email: '',
+        phone: '',
+        password: '',
+      ),
+    );
+
+    if (matchingUser.email.isNotEmpty) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => HomeScreen()),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Invalid email or password')),
+      );
+    }
+  }
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SingleChildScrollView( // Allows scrolling if needed
+      body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              SizedBox(height: 60), // Increased space at the top
+              SizedBox(height: 60),
               Center(
                 child: Container(
                   width: 80,
                   height: 80,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: Colors.pink[200], // Approximate color from the image
+                    color: Colors.pink[200],
                   ),
                   child: Center(child: Text('logo')),
                 ),
@@ -38,12 +79,14 @@ class _SignInScreenState extends State<SignInScreen> {
                   style: TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
-                    color: Colors.blue, // Approximate color from the image
+                    color: Colors.blue,
                   ),
                 ),
               ),
               SizedBox(height: 24),
               TextField(
+                controller: _emailController,
+                keyboardType: TextInputType.emailAddress,
                 decoration: InputDecoration(
                   labelText: 'Email',
                   border: OutlineInputBorder(),
@@ -51,6 +94,7 @@ class _SignInScreenState extends State<SignInScreen> {
               ),
               SizedBox(height: 16),
               TextField(
+                controller: _passwordController,
                 obscureText: true,
                 decoration: InputDecoration(
                   labelText: 'Password',
@@ -59,13 +103,7 @@ class _SignInScreenState extends State<SignInScreen> {
               ),
               SizedBox(height: 16),
               ElevatedButton(
-                onPressed: () {
-                  // Handle login button press
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => HomeScreen()),
-                  );
-                },
+                onPressed: _login,
                 child: Text('Log in'),
                 style: ElevatedButton.styleFrom(
                   padding: EdgeInsets.symmetric(vertical: 16),
@@ -90,7 +128,6 @@ class _SignInScreenState extends State<SignInScreen> {
               ),
               TextButton(
                 onPressed: () {
-                  // Navigate to SignUpScreen when 'Create account' is pressed
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => SignUpScreen()),
@@ -115,15 +152,11 @@ class _SignInScreenState extends State<SignInScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   IconButton(
-                    onPressed: () {
-                      // Handle Facebook login
-                    },
+                    onPressed: () {},
                     icon: Icon(Icons.facebook, size: 30, color: Colors.blue[800]),
                   ),
                   IconButton(
-                    onPressed: () {
-                      // Handle Google login
-                    },
+                    onPressed: () {},
                     icon: Icon(Icons.mail, size: 30, color: Colors.red[600]),
                   ),
                 ],
